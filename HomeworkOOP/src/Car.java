@@ -13,11 +13,13 @@ public class Car {
         this.engineCapacity = engineCapacity;
 
     }
+
     public String outputInfo() {
-    return String.format("Brand: %s \nModel: %s \nNumber of seat: %d \nHors power: %d \nEngine capacity: %s",
+        return String.format("Brand: %s \nModel: %s \nNumber of seat: %d \nHors power: %d \nEngine capacity: %.1f",
            brand, model, numberOfSeat, horsPower, engineCapacity );
 
     }
+
     public String drive() {
         return String.format("Vrooom.., come sit in my %s %s ", brand,model);
     }
