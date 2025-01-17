@@ -1,94 +1,82 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    static Scanner scanner = new Scanner(System.in);
-
-    public static void main(String[] args) {
-
-        Coupe coupe = new Coupe();
-        Suv suv = new Suv("Mercedes", "C-AMG", 2,630, 4.0, 2.2);
-
+    public static void main(String[] args) throws IOException {
         int n;
+        ArrayList<Car> cars = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+        String filePath = "Homework.txt";
+        FileWriter fileWriter = new FileWriter(filePath, true);
+        File file = new File(filePath);
+        Scanner scannerFromFile = new Scanner(file);
+
+        while (scannerFromFile.hasNext()) {
+            String stringCar = scannerFromFile.nextLine();
+            String[] parsedCar = stringCar.split("~");
+            if (parsedCar[0].equals("Coupe")) {
+                cars.add(new Coupe(parsedCar[1], parsedCar[2], Integer.parseInt(parsedCar[3]), Integer.parseInt(parsedCar[4]),
+                        Double.parseDouble(parsedCar[5]), Integer.parseInt(parsedCar[6])));
+            } else if (parsedCar[0].equals("Suv")) {
+                cars.add(new Suv(parsedCar[1], parsedCar[2], Integer.parseInt(parsedCar[3]), Integer.parseInt(parsedCar[4]),
+                        Double.parseDouble(parsedCar[5]), Double.parseDouble(parsedCar[6])));
+            }
+        }
 
         do {
-            System.out.println("Выбрать (0 - выход. 1 - добавить/изменить. 2 - вывести. 3 - ехать");
+            System.out.print("Select an action (0 - Exit. 1 - Add car. 2 - Output cars): ");
             n = scanner.nextInt();
 
             switch (n) {
+                case 0:
+                    System.out.println("Exit...");
+                    break;
+                case 1:
+                    System.out.print("Select a car (1 - Coupe. 2 - Suv): ");
+                    int a = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Enter brand: ");
+                    String valueBrand = scanner.nextLine();
+                    System.out.print("Enter model: ");
+                    String valueModel = scanner.nextLine();
+                    System.out.print("Enter number of seat: ");
+                    int valueNumberOfSeat = scanner.nextInt();
+                    System.out.print("Enter horse power: ");
+                    int valueHorsePower = scanner.nextInt();
+                    System.out.print("Enter engine capacity: ");
+                    double valueEngineCapacity = scanner.nextDouble();
+                    scanner.nextLine();
 
-                case 0 -> System.out.println("Выход");
-                case 1 -> {
-                    System.out.println("Выбор авто (1 - Coupe; 2 - Suv): ");
-
-                    int typeCar = scanner.nextInt();
-
-                    if (typeCar == 1) {
-                        writeInfoForCoupe(coupe);
+                    if (a == 1) {
+                        System.out.print("Enter numbers of doors: ");
+                        int valueNumbersOfDoors = scanner.nextInt();
+                        cars.add(new Coupe(valueBrand, valueModel, valueNumberOfSeat, valueHorsePower,
+                                valueEngineCapacity, valueNumbersOfDoors));
+                        fileWriter.write("\nCoupe" + "~" + valueBrand + "~" + valueModel + "~" + valueNumberOfSeat
+                                + "~" + valueHorsePower + "~" + valueEngineCapacity + "~" + valueNumbersOfDoors);
+                    } else if (a == 2) {
+                        System.out.print("Enter body height: ");
+                        double valueBodyHeight = scanner.nextDouble();
+                        cars.add(new Suv(valueBrand, valueModel, valueNumberOfSeat, valueHorsePower,
+                                valueEngineCapacity, valueBodyHeight));
+                        fileWriter.write("\nSuv" + "~" + valueBrand + "~" + valueModel + "~" + valueNumberOfSeat
+                                + "~" + valueHorsePower + "~" + valueEngineCapacity + "~" + valueBodyHeight);
                     }
-
-                    if (typeCar == 2)
-                        writeInfoForSuv(suv);
-                }
-                case 2 -> {
-                    System.out.println("Выбор авто (1 - Coupe. 2 - Suv): ");
-
-                    System.out.println(scanner.nextInt() == 1 ? coupe.outputInfo() : suv.outputInfo());
-                }
-                case 3 -> {
-                    System.out.println("Выбор авто (1 - Coupe. 2 - Suv): ");
-
-                    System.out.println(scanner.nextInt() == 1 ? coupe.drive() : suv.drive());
-                }
+                    break;
+                case 2:
+                    for (Car car : cars) {
+                        System.out.println(car.outputInfo());
+                    }
+                    break;
+                default:
+                    System.out.println("There is no such action!");
+                    break;
             }
         } while (n != 0);
-    }
 
-    public static Coupe writeInfoForCoupe(Coupe coupe) {
-
-        if (coupe.getModel() == null) {
-            System.out.println("Print Model");
-            coupe.setModel(scanner.next());
-        }
-        else {
-            System.out.println("Изменить модель (1 - Да; 2 - Нет): ");
-            if (scanner.nextInt() == 1) {
-                System.out.println("Print Model");
-                coupe.setModel(scanner.next());
-            }
-        }
-
-        System.out.println("Print Brand");
-        coupe.setBrand(scanner.next());
-
-        System.out.println("Print Engine power");
-        coupe.setEnginePower(scanner.nextInt());
-
-        System.out.println("Print Engine displacement");
-        coupe.setEngineDisplacement(scanner.nextDouble());
-
-        coupe.setNumberOfSeat(2);
-        coupe.setNumbersOfDoors(2);
-
-        return coupe;
-    }
-
-    public static Suv writeInfoForSuv(Suv suv) {
-
-        System.out.println("Print Model");
-        suv.setModel(scanner.next());
-
-        System.out.println("Print Brand");
-        suv.setBrand(scanner.next());
-
-        System.out.println("Print Engine power");
-        suv.setEnginePower(scanner.nextInt());
-
-        System.out.println("Print Engine displacement");
-        suv.setEngineDisplacement(scanner.nextDouble());
-
-        suv.setNumberOfSeat(2);
-        suv.setBodyHeight(2.2);
-
-        return suv;
+        fileWriter.close();
     }
 }
